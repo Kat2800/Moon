@@ -3,7 +3,7 @@ Description=M00N Boot Executer
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/python /home/moon/M00N/menu.py
+ExecStart=/usr/bin/python3 /home/moon/M00N/menu.py
 WorkingDirectory=/home/moon/M00N/
 StandardOutput=inherit
 StandardError=inherit
