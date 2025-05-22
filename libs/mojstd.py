@@ -3,6 +3,7 @@ from PIL import Image, ImageDraw, ImageFont
 from libs import LCD_1in44
 import time
 import os
+import textwrap
 import subprocess
 import psutil
 import json
@@ -70,7 +71,7 @@ def draw_file_menu(files, selected_index):
 
 def execute_file(directory, file_base):
     """Execute the file based on its base name by searching its extension."""
-    file_extensions = ['.py', '.sh', '.moj']
+    file_extensions = ['.py', '.sh', '.mo']
     for ext in file_extensions:
         file_path = os.path.join(directory, file_base + ext)
         if os.path.exists(file_path):
@@ -78,7 +79,7 @@ def execute_file(directory, file_base):
                 subprocess.run(['sudo', 'python3', file_path])
             elif ext == '.sh':
                 subprocess.run(['sudo', 'bash', file_path])
-            elif ext == ".moj":
+            elif ext == ".mo":
                 subprocess.run(['sudo', './', file_path])
             return
 
@@ -280,7 +281,26 @@ def show_image(image_path, duration=1.25):
         time.sleep(duration)
         disp.LCD_Clear()
     
+def ui_error(message, duration=2, color=(255, 255, 255)):
+    draw.rectangle((0, 0, width, height), outline=0, fill=(0, 0, 0))
 
+    max_chars_per_line = width // font.getsize('A')[0]  #
+    wrapped_text = textwrap.wrap(message, width=max_chars_per_line)
+
+    y = 0  
+    line_height = font.getsize('A')[1]
+
+    for line in wrapped_text:
+        draw.text((0, y), line, font=font, fill=color)
+        y += line_height
+        if y > height - line_height:
+            break 
+
+    disp.LCD_ShowImage(image, 0, 0)
+
+    if duration != "unset":
+        time.sleep(duration)
+        disp.LCD_Clear()
 def ui_print(message, duration=2, color=(255, 255, 255)):
     draw.rectangle((0, 0, width, height), outline=0, fill=(0, 0, 0))
     draw.text((10, 50), message, font=font, fill=color)
